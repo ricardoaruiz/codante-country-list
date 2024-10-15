@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
+    "test": "echo test",
     "prepare": "husky install"
   },
   "lint-staged": {
