@@ -1,9 +1,10 @@
+import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import { detailCountry } from '@/actions/country/detail';
-import { listCountriesByCodes } from '@/actions/country/listByCodes';
-import { CountryCard, PageContent } from '@/components';
+import { NeighboringCountries, PageContent } from '@/components';
+import { NeighboringCountriesSkeleton } from '@/components/NeighboringCountries/NeighboringCountriesSkeleton';
 import { formatNumber } from '@/helpers/math';
 
 type CountryProps = {
@@ -13,8 +14,7 @@ type CountryProps = {
 };
 
 export default async function Country({ params }: CountryProps) {
-  const country = await detailCountry(params.code);
-  const borders = await listCountriesByCodes(...country.borders);
+  const country = await detailCountry({ code: params.code, delay: 1500 });
 
   return (
     <PageContent className="px-10 xl:px-0">
@@ -45,7 +45,7 @@ export default async function Country({ params }: CountryProps) {
           <li>‍👩‍👧‍👦 População: {formatNumber(country.population)}</li>
           <li>
             <div>🗣️ Línguas faladas:</div>
-            <ul className="mt-4 flex gap-2">
+            <ul className="mt-4 flex w-1/2 flex-wrap gap-2">
               {country.languages.map((language) => (
                 <li
                   key={language}
@@ -62,23 +62,15 @@ export default async function Country({ params }: CountryProps) {
           <Image
             src={country.flag}
             alt={country.name}
-            className="rounded-xl object-cover"
+            className="rounded-xl border border-slate-300 object-cover"
             fill
           />
         </div>
       </article>
 
-      <h2 className="text-bold my-8 text-4xl">Países que fazem fronteira</h2>
-
-      <ul className="grid grid-cols-1 gap-10 px-4 md:grid-cols-2 lg:grid-cols-3 lg:px-0 xl:grid-cols-4">
-        {borders.map((border) => (
-          <li key={border.code}>
-            <Link href={`/country/${border.code}`} key={border.name}>
-              <CountryCard name={border.name} flag={border.flag} />
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <Suspense fallback={<NeighboringCountriesSkeleton />}>
+        <NeighboringCountries borders={country.borders} />
+      </Suspense>
     </PageContent>
   );
 }

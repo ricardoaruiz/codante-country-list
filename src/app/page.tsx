@@ -4,7 +4,7 @@ import { listCountries } from '@/actions/country/list';
 import { CountryCard, PageContent } from '@/components';
 
 export default async function Home() {
-  const countries = await listCountries();
+  const countries = await listCountries(2000);
 
   return (
     <PageContent className="grid grid-cols-1 gap-10 px-4 md:grid-cols-2 lg:grid-cols-3 lg:px-0 xl:grid-cols-4">

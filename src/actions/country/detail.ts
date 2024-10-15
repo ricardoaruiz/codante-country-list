@@ -1,8 +1,10 @@
 'use server';
 
+import { sleep } from '@/helpers/async';
+
 import { BASE_URL } from '../constants';
 
-import { ApiCountry, CountryDetail } from './types';
+import { ApiCountry, CountryDetailInput, CountryDetailOutput } from './types';
 
 const LIST_REQUEST_FIELDS = [
   'name',
@@ -19,13 +21,20 @@ const LIST_REQUEST_FIELDS = [
 const ALPHA_URL = '/alpha';
 const FIELDS = `?fields=${LIST_REQUEST_FIELDS.join(',')}`;
 
-export const detailCountry = async (code: string): Promise<CountryDetail> => {
+export const detailCountry = async ({
+  code,
+  delay
+}: CountryDetailInput): Promise<CountryDetailOutput> => {
+  if (delay) {
+    await sleep(delay);
+  }
+
   const DETAIL_URL = `${BASE_URL}${ALPHA_URL}/${code}${FIELDS}`;
   const response = await fetch(DETAIL_URL);
 
   const country = (await response.json()) as ApiCountry;
 
-  const data: CountryDetail = {
+  const data: CountryDetailOutput = {
     code: country.cca3,
     name: country.translations.por.common,
     capital: country.capital[0],

@@ -32,5 +32,8 @@ export type Country = {
   borders: string[];
 };
 
-export type CountryListItem = Pick<Country, 'code' | 'name' | 'flag'>;
-export type CountryDetail = Country;
+export type CountryListItemInput = { codes: string[]; delay?: number };
+export type CountryListItemOutput = Pick<Country, 'code' | 'name' | 'flag'>;
+
+export type CountryDetailInput = { code: string; delay?: number };
+export type CountryDetailOutput = Country;
